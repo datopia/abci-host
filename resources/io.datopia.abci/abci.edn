@@ -1,0 +1,309 @@
+{:abci/Request
+ {:fields
+  {:flush
+   {:tag 3, :type :abci/RequestFlush, :wire-type 2, :one-of :value},
+   :end-block
+   {:tag 11,
+    :type :abci/RequestEndBlock,
+    :wire-type 2,
+    :one-of :value},
+   :deliver-tx
+   {:tag 19,
+    :type :abci/RequestDeliverTx,
+    :wire-type 2,
+    :one-of :value},
+   :check-tx
+   {:tag 9, :type :abci/RequestCheckTx, :wire-type 2, :one-of :value},
+   :echo
+   {:tag 2, :type :abci/RequestEcho, :wire-type 2, :one-of :value},
+   :commit
+   {:tag 12, :type :abci/RequestCommit, :wire-type 2, :one-of :value},
+   :info
+   {:tag 4, :type :abci/RequestInfo, :wire-type 2, :one-of :value},
+   :set-option
+   {:tag 5,
+    :type :abci/RequestSetOption,
+    :wire-type 2,
+    :one-of :value},
+   :init-chain
+   {:tag 6,
+    :type :abci/RequestInitChain,
+    :wire-type 2,
+    :one-of :value},
+   :begin-block
+   {:tag 8,
+    :type :abci/RequestBeginBlock,
+    :wire-type 2,
+    :one-of :value},
+   :query
+   {:tag 7, :type :abci/RequestQuery, :wire-type 2, :one-of :value}}},
+ :abci/Version
+ {:fields
+  {:Block {:tag 1, :scalar? true, :type :uint64, :wire-type 0},
+   :App {:tag 2, :scalar? true, :type :uint64, :wire-type 0}}},
+ :abci/ConsensusParams
+ {:fields
+  {:block-size {:tag 1, :type :abci/BlockSizeParams, :wire-type 2},
+   :evidence {:tag 2, :type :abci/EvidenceParams, :wire-type 2},
+   :validator {:tag 3, :type :abci/ValidatorParams, :wire-type 2}}},
+ :abci/Header
+ {:fields
+  {:last-block-id {:tag 7, :type :abci/BlockID, :wire-type 2},
+   :last-commit-hash
+   {:tag 8, :scalar? true, :type :bytes, :wire-type 2},
+   :consensus-hash
+   {:tag 12, :scalar? true, :type :bytes, :wire-type 2},
+   :data-hash {:tag 9, :scalar? true, :type :bytes, :wire-type 2},
+   :num-txs {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :evidence-hash {:tag 15, :scalar? true, :type :bytes, :wire-type 2},
+   :app-hash {:tag 13, :scalar? true, :type :bytes, :wire-type 2},
+   :time {:tag 4, :type :google.protobuf/Timestamp, :wire-type 2},
+   :proposer-address
+   {:tag 16, :scalar? true, :type :bytes, :wire-type 2},
+   :last-results-hash
+   {:tag 14, :scalar? true, :type :bytes, :wire-type 2},
+   :chain-id {:tag 2, :scalar? true, :type :string, :wire-type 2},
+   :validators-hash
+   {:tag 10, :scalar? true, :type :bytes, :wire-type 2},
+   :total-txs {:tag 6, :scalar? true, :type :int64, :wire-type 0},
+   :version {:tag 1, :type :abci/Version, :wire-type 2},
+   :next-validators-hash
+   {:tag 11, :scalar? true, :type :bytes, :wire-type 2},
+   :height {:tag 3, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/BlockSizeParams
+ {:fields
+  {:max-bytes {:tag 1, :scalar? true, :type :int64, :wire-type 0},
+   :max-gas {:tag 2, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/ResponseQuery
+ {:fields
+  {:key {:tag 6, :scalar? true, :type :bytes, :wire-type 2},
+   :index {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :value {:tag 7, :scalar? true, :type :bytes, :wire-type 2},
+   :proof {:tag 8, :type :abci/Proof, :wire-type 2},
+   :info {:tag 4, :scalar? true, :type :string, :wire-type 2},
+   :code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
+   :codespace {:tag 10, :scalar? true, :type :string, :wire-type 2},
+   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
+   :height {:tag 9, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/RequestQuery
+ {:fields
+  {:data {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
+   :path {:tag 2, :scalar? true, :type :string, :wire-type 2},
+   :height {:tag 3, :scalar? true, :type :int64, :wire-type 0},
+   :prove {:tag 4, :scalar? true, :type :bool, :wire-type 0}}},
+ :abci/RequestInfo
+ {:fields
+  {:version {:tag 1, :scalar? true, :type :string, :wire-type 2},
+   :block-version {:tag 2, :scalar? true, :type :uint64, :wire-type 0},
+   :p2p-version {:tag 3, :scalar? true, :type :uint64, :wire-type 0}}},
+ :abci/EvidenceParams
+ {:fields
+  {:max-age {:tag 1, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/ResponseBeginBlock
+ {:fields
+  {:tags {:tag 1, :repeated? true, :type :abci/KVPair, :wire-type 2}}},
+ :abci/ValidatorUpdate
+ {:fields
+  {:pub-key {:tag 1, :type :abci/PubKey, :wire-type 2},
+   :power {:tag 2, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/ResponseFlush {},
+ :abci/ResponseEcho
+ {:fields
+  {:message {:tag 1, :scalar? true, :type :string, :wire-type 2}}},
+ :abci/ResponseException
+ {:fields
+  {:error {:tag 1, :scalar? true, :type :string, :wire-type 2}}},
+ :abci/BlockID
+ {:fields
+  {:hash {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
+   :parts-header {:tag 2, :type :abci/PartSetHeader, :wire-type 2}}},
+ :abci/RequestEndBlock
+ {:fields
+  {:height {:tag 1, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/RequestBeginBlock
+ {:fields
+  {:hash {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
+   :header {:tag 2, :type :abci/Header, :wire-type 2},
+   :last-commit-info
+   {:tag 3, :type :abci/LastCommitInfo, :wire-type 2},
+   :byzantine-validators
+   {:tag 4, :repeated? true, :type :abci/Evidence, :wire-type 2}}},
+ :abci/RequestEcho
+ {:fields
+  {:message {:tag 1, :scalar? true, :type :string, :wire-type 2}}},
+ :abci/ResponseInitChain
+ {:fields
+  {:consensus-params
+   {:tag 1, :type :abci/ConsensusParams, :wire-type 2},
+   :validators
+   {:tag 2,
+    :repeated? true,
+    :type :abci/ValidatorUpdate,
+    :wire-type 2}}},
+ :abci/ResponseSetOption
+ {:fields
+  {:code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
+   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
+   :info {:tag 4, :scalar? true, :type :string, :wire-type 2}}},
+ :abci/RequestCommit {},
+ :abci/ResponseCheckTx
+ {:fields
+  {:code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
+   :data {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
+   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
+   :info {:tag 4, :scalar? true, :type :string, :wire-type 2},
+   :gas-wanted {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :gas-used {:tag 6, :scalar? true, :type :int64, :wire-type 0},
+   :tags {:tag 7, :repeated? true, :type :abci/KVPair, :wire-type 2},
+   :codespace {:tag 8, :scalar? true, :type :string, :wire-type 2}}},
+ :abci/LastCommitInfo
+ {:fields
+  {:round {:tag 1, :scalar? true, :type :int32, :wire-type 0},
+   :votes
+   {:tag 2, :repeated? true, :type :abci/VoteInfo, :wire-type 2}}},
+ :abci/ProofOp
+ {:fields
+  {:type {:tag 1, :scalar? true, :type :string, :wire-type 2},
+   :key {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
+   :data {:tag 3, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/Validator
+ {:fields
+  {:address {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
+   :power {:tag 3, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/ResponseDeliverTx
+ {:fields
+  {:code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
+   :data {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
+   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
+   :info {:tag 4, :scalar? true, :type :string, :wire-type 2},
+   :gas-wanted {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :gas-used {:tag 6, :scalar? true, :type :int64, :wire-type 0},
+   :tags {:tag 7, :repeated? true, :type :abci/KVPair, :wire-type 2},
+   :codespace {:tag 8, :scalar? true, :type :string, :wire-type 2}}},
+ :abci/ResponseCommit
+ {:fields {:data {:tag 2, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/KVPair
+ {:fields
+  {:key {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
+   :value {:tag 2, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/RequestSetOption
+ {:fields
+  {:key {:tag 1, :scalar? true, :type :string, :wire-type 2},
+   :value {:tag 2, :scalar? true, :type :string, :wire-type 2}}},
+ :abci/ValidatorParams
+ {:fields
+  {:pub-key-types
+   {:tag 1,
+    :repeated? true,
+    :scalar? true,
+    :type :string,
+    :wire-type 2}}},
+ :abci/RequestCheckTx
+ {:fields {:tx {:tag 1, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/ResponseEndBlock
+ {:fields
+  {:validator-updates
+   {:tag 1,
+    :repeated? true,
+    :type :abci/ValidatorUpdate,
+    :wire-type 2},
+   :consensus-param-updates
+   {:tag 2, :type :abci/ConsensusParams, :wire-type 2},
+   :tags {:tag 3, :repeated? true, :type :abci/KVPair, :wire-type 2}}},
+ :abci/RequestDeliverTx
+ {:fields {:tx {:tag 1, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/RequestInitChain
+ {:fields
+  {:time {:tag 1, :type :google.protobuf/Timestamp, :wire-type 2},
+   :chain-id {:tag 2, :scalar? true, :type :string, :wire-type 2},
+   :consensus-params
+   {:tag 3, :type :abci/ConsensusParams, :wire-type 2},
+   :validators
+   {:tag 4,
+    :repeated? true,
+    :type :abci/ValidatorUpdate,
+    :wire-type 2},
+   :app-state-bytes
+   {:tag 5, :scalar? true, :type :bytes, :wire-type 2}}},
+ :google.protobuf/Timestamp
+ {:fields
+  {:seconds {:tag 1, :scalar? true, :type :int64, :wire-type 0},
+   :nanos {:tag 2, :scalar? true, :type :int32, :wire-type 0}}},
+ :abci/RequestFlush {},
+ :abci/Proof
+ {:fields
+  {:ops {:tag 1, :repeated? true, :type :abci/ProofOp, :wire-type 2}}},
+ :abci/VoteInfo
+ {:fields
+  {:validator {:tag 1, :type :abci/Validator, :wire-type 2},
+   :signed-last-block
+   {:tag 2, :scalar? true, :type :bool, :wire-type 0}}},
+ :abci/ResponseInfo
+ {:fields
+  {:data {:tag 1, :scalar? true, :type :string, :wire-type 2},
+   :version {:tag 2, :scalar? true, :type :string, :wire-type 2},
+   :app-version {:tag 3, :scalar? true, :type :uint64, :wire-type 0},
+   :last-block-height
+   {:tag 4, :scalar? true, :type :int64, :wire-type 0},
+   :last-block-app-hash
+   {:tag 5, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/Evidence
+ {:fields
+  {:type {:tag 1, :scalar? true, :type :string, :wire-type 2},
+   :validator {:tag 2, :type :abci/Validator, :wire-type 2},
+   :height {:tag 3, :scalar? true, :type :int64, :wire-type 0},
+   :time {:tag 4, :type :google.protobuf/Timestamp, :wire-type 2},
+   :total-voting-power
+   {:tag 5, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/PubKey
+ {:fields
+  {:type {:tag 1, :scalar? true, :type :string, :wire-type 2},
+   :data {:tag 2, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/Response
+ {:fields
+  {:flush
+   {:tag 3, :type :abci/ResponseFlush, :wire-type 2, :one-of :value},
+   :end-block
+   {:tag 11,
+    :type :abci/ResponseEndBlock,
+    :wire-type 2,
+    :one-of :value},
+   :deliver-tx
+   {:tag 10,
+    :type :abci/ResponseDeliverTx,
+    :wire-type 2,
+    :one-of :value},
+   :check-tx
+   {:tag 9, :type :abci/ResponseCheckTx, :wire-type 2, :one-of :value},
+   :echo
+   {:tag 2, :type :abci/ResponseEcho, :wire-type 2, :one-of :value},
+   :commit
+   {:tag 12, :type :abci/ResponseCommit, :wire-type 2, :one-of :value},
+   :info
+   {:tag 4, :type :abci/ResponseInfo, :wire-type 2, :one-of :value},
+   :set-option
+   {:tag 5,
+    :type :abci/ResponseSetOption,
+    :wire-type 2,
+    :one-of :value},
+   :exception
+   {:tag 1,
+    :type :abci/ResponseException,
+    :wire-type 2,
+    :one-of :value},
+   :init-chain
+   {:tag 6,
+    :type :abci/ResponseInitChain,
+    :wire-type 2,
+    :one-of :value},
+   :begin-block
+   {:tag 8,
+    :type :abci/ResponseBeginBlock,
+    :wire-type 2,
+    :one-of :value},
+   :query
+   {:tag 7, :type :abci/ResponseQuery, :wire-type 2, :one-of :value}}},
+ :abci/PartSetHeader
+ {:fields
+  {:total {:tag 1, :scalar? true, :type :int32, :wire-type 0},
+   :hash {:tag 2, :scalar? true, :type :bytes, :wire-type 2}}}}
