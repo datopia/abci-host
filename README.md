@@ -1,5 +1,8 @@
 # io.datopia/abci
 
+[![Clojars
+Project](http://clojars.org/io.datopia/abci/latest-version.svg)](http://clojars.org/io.datopia/abci)
+
 A Clojure library which acts as an application host
 for
 [Tendermint](https://tendermint.com)'s
