@@ -12,6 +12,12 @@ pure-data representations of
 the [protobuf](https://developers.google.com/protocol-buffers/)-encoded messages
 received from the Tendermint node process -- maps in, maps out.
 
+## Documentation
+
+ - [API docs](https://datopia.github.io/abci-host/)
+
+## Example
+
 The simplest possible service looks something like:
 
 ```clojure
