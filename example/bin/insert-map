@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# -*- mode: sh -*-
+
+set -e -o pipefail
+
+hex=$(xxd -pu <<< "$1")
+curl -v "http://localhost:26657/broadcast_tx_sync?tx=0x${hex}"
