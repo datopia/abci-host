@@ -1,4 +1,4 @@
-(defproject io.datopia/abci "0.1.0"
+(defproject io.datopia/abci "0.1.1-SNAPSHOT"
   :description  "Clojure host/server for Tendermint's ABCI protocol."
   :url          "https://github.com/datopia/abci-host"
   :license      {:name "MIT License"
