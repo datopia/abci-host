@@ -80,11 +80,11 @@
 
 (defmethod respond :default [_] ::mw/default)
 
-;; `RequestInfo` is part of the consensus connection's handshake --- it's the
-;; first message we'll receive on startup, when resuming validation of an
-;; existing chain.  The ABCI client wants to determine our last known block height
-;; (and the corresponding state hash), so it knows which blocks to replay.  If
-;; we return the default response, all blocks'll be replayed.
+;; `RequestInfo` is part of the startup handshake --- it's the
+;; first message we'll receive, when resuming validation of an
+;; existing chain.  The ABCI client wants to determine our last known block
+;; height (and the corresponding state hash), so it knows which blocks to
+;; replay.  If  we return the default response, all blocks'll be replayed.
 
 (defmethod respond :abci/RequestInfo [_]
   (if-let [hash (kv/retrieve store last-hash-k)]
