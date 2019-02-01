@@ -5,7 +5,6 @@
 ### Added
 - Example key-value store project `abci.example.kv`.
 - Configurable error handler w/ strict default ([Issue #5]).
-- Codox output in `docs/` -> [API Docs]
 - Misc. README enhancements.
 - Changelog.
 
