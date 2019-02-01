@@ -6,19 +6,21 @@ Project](http://clojars.org/io.datopia/abci/latest-version.svg)](http://clojars.
 A Clojure library which acts as an application host
 for
 [Tendermint](https://tendermint.com)'s
-[ABCI](https://tendermint.com/docs/introduction/what-is-tendermint.html#abci-overview) -
+[ABCI](https://tendermint.com/docs/introduction/what-is-tendermint.html#abci-overview) ---
 allowing the exposure of plain functions as replicable state machines.
 
 `io.datopia/abci`
 uses [io.datopia/stickler](https://github.com/datopia/stickler) to provide
 pure-data representations of
 the [protobuf](https://developers.google.com/protocol-buffers/)-encoded messages
-received from the Tendermint node process -- maps in, maps out.
+received from the Tendermint node process --- maps in, maps out.
 
 ## Documentation
 
  - [API docs](https://datopia.github.io/abci-host/).
  - [K/V store example project](example).
+
+### [Change Log](CHANGELOG.md).
 
 ## Supported Tendermint Versions
 
