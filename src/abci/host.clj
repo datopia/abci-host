@@ -57,7 +57,7 @@
                        (d/chain
                         (partial respond! s)
                         (fn maybe-recur [put-succeeded?]
-                          (when put-suceeded?
+                          (when put-succeeded?
                             (d/recur (or conn-name (req->conn-name req)))))))))))
             (d/catch
               (fn [e]
