@@ -73,6 +73,8 @@
     (.close ^java.io.Closeable closeable)
     (vreset! vol nil)))
 
+(def ^:dynamic ^:no-doc *start-server* tcp/start-server)
+
 (defn start
   "Accept Tendermint ABCI connections on the `:port` specified in `opts`,
    or [[default-port]].  Pass incoming messages to `handler` (`map -> Deferred
@@ -89,10 +91,10 @@
 
    Return the result of Aleph's [start-server](https://aleph.io/codox/aleph/aleph.tcp.html)."
   [handler & [opts]]
-  (let [server (volatile! nil)
-        opts   (as-> opts o
-                 (merge {:port default-port} o {:raw-stream? true})
-                 (cond-> o
-                   (not (:on-error o)) (assoc :on-error #(on-error server %))))
+  (let [server   (volatile! nil)
+        on-error (or (:on-error opts) on-error)
+        opts     (as-> opts o
+                   (merge {:port default-port} o {:raw-stream? true})
+                   (assoc o :on-error (partial on-error server)))
         f      (abci-handler-wrapper handler opts)]
-    (vreset! server (tcp/start-server f opts))))
+    (vreset! server (*start-server* f opts))))
