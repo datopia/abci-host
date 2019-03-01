@@ -1,4 +1,22 @@
 (ns abci.example.kv
+  "An example ABCI application, in the mold of
+   Tendermint's [kvstore.go](https://github.com/tendermint/tendermint/blob/master/abci/example/kvstore/kvstore.go).
+
+   `abci.example.kv` is capable of storing arbitrary EDN data structures under
+   keyword keys, using an implementation of [Ethereum's Compact Merkle
+   Trie](https://nervous.io/clojure/crypto/2018/04/04/clojure-evm-iii/)
+   from [io.nervous/sputter](https://github.com/nervous-systems/sputter), a
+   Clojure implementation of the Ethereum Virtual Machine.
+
+   Note this example application has nothing to do with Ethereum --- there's a
+   dearth of compact, authenticated/[Merkle](https://en.wikipedia.org/wiki/Merkle_tree)
+   data structures in Clojure; with its simple k/v interface, sputter's trie
+   seemed like the choice that'd require the least code, and raise the fewest
+   questions --- it's a general-purpose data structure.
+
+   We don't really need to know anything about the trie's internals.  At the most
+   superficial level, it maps strings to strings, and can be persisted to disk
+   using a pluggable KV store backend."
   (:require [abci.host                :as host]
             [abci.host.middleware     :as mw]
             [sputter.state.trie       :as trie]
@@ -15,28 +33,28 @@
   (leveldb/map->LevelDBStore {:path "abci.example.kv"}))
 
 (defn- map->KVTrie
-  "Utility for constructing tries backed by [[store]]."
+  "Utility for constructing tries backed by [[store]], optionally merging in the
+  given options map."
   [& [opts]]
   (trie/map->KVTrie (merge {:store store} opts)))
 
 ;; The `trie` atom holds a [[trie/Trie]] - an implementation of Ethereum's compact
-;; Merkle trie (or "Merkle Patricia trie").  We're using it as an immutable, disk
-;; persistent, authenticated key-value store.
+;; Merkle trie (or "Merkle Patricia trie")
 
 (defonce ^:private trie (atom (map->KVTrie)))
 
-;; Values are incorporated  via `trie/insert` --- an in-memory operation, returning
+;; Values are incorporated via `trie/insert` --- an in-memory operation, returning
 ;; a new trie:
 
 (comment
   (swap! trie trie/insert "key" "value"))
 
-;; `trie/commit` flushes pending writes to disk, returning a trie holding
-;; a `:hash` key, the recursive cryptographic hash of the committed trie's root
-;; node.
+;; `trie/commit` flushes pending inserts to disk, returning a trie holding
+;; a `:hash` key --- the identity of the persisted root node, and a recursive
+;; cryptographic hash of its contents / descendents.
 ;;
 ;; The trie implementation supports only `String`/bytes for keys & values,
-;; while our example application supports only keyword keys, with arbitrary EDN
+;; while our example application supports keyword keys, with arbitrary EDN
 ;; values.  To bridge this gap, we'll stringify all keys, and print values to
 ;; EDN strings.  For example, the mapping `:a/b` -> `{:c 1}`, would be
 ;; translated into `"a/b" -> `(pr-str {:c 1})` prior to insertion.
@@ -65,8 +83,8 @@
 ;; `io.datopia/stickler`, a general purpose protobuf3 library.
 ;;
 ;; Each message we receive from `io.datopia/abci` is represented as a map, and
-;; retains the `:stickler/msg` key identifying the underlying protobuf message
-;; type. Rather than use an unwieldy `case` statement - or similar - to
+;; retains the `:stickler/msg` key identifying its underlying protobuf message
+;; type. Rather than use an unwieldy `case` statement --- or similar --- to
 ;; distinguish between incoming message types, we define a multimethod
 ;; dispatching on the `:stickler/msg` key.
 
