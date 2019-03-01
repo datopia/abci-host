@@ -14,7 +14,7 @@
 (defonce ^:private store
   (leveldb/map->LevelDBStore {:path "abci.example.kv"}))
 
-(defn- ->KVTrie
+(defn- map->KVTrie
   "Utility for constructing tries backed by [[store]]."
   [& [opts]]
   (trie/map->KVTrie (merge {:store store} opts)))
@@ -23,7 +23,7 @@
 ;; Merkle trie (or "Merkle Patricia trie").  We're using it as an immutable, disk
 ;; persistent, authenticated key-value store.
 
-(defonce ^:private trie (atom (->KVTrie)))
+(defonce ^:private trie (atom (map->KVTrie)))
 
 ;; Values are incorporated  via `trie/insert` --- an in-memory operation, returning
 ;; a new trie:
@@ -47,7 +47,7 @@
 ;; snapshot of the application's state at that point/block.
 
 (comment
-  (->KVTrie {:root (<bytes> "DAEA9...")}))
+  (map->KVTrie {:root (<bytes> "DAEA9...")}))
 
 ;; We'll persist the most recent root hash _directly in `store`_, rather than
 ;; `trie` --- otherwise we'd have a chicken/egg problem when reconstructing a trie
@@ -62,7 +62,7 @@
 (def ^:private height-k "abci.example.kv/height")
 
 ;; `io.datopia/abci` ensures messages received from Tendermint'll be parsed by
-;; `io.datopa/stickler`, a general purpose protobuf3 library.
+;; `io.datopia/stickler`, a general purpose protobuf3 library.
 ;;
 ;; Each message we receive from `io.datopia/abci` is represented as a map, and
 ;; retains the `:stickler/msg` key identifying the underlying protobuf message
@@ -80,15 +80,19 @@
 
 (defmethod respond :default [_] ::mw/default)
 
-;; `RequestInfo` is part of the consensus connection's handshake --- it's the
-;; first message we'll receive on startup, when resuming validation of an
-;; existing chain.  The ABCI client wants to determine our last known block height
-;; (and the corresponding state hash), so it knows which blocks to replay.  If
-;; we return the default response, all blocks'll be replayed.
+;; `RequestInfo` is integral to the ABCI handshake --- it's the first message
+;; we'll receive on startup, when resuming validation of an existing chain.  The
+;; ABCI client wants to determine our last known block height (and the corresponding
+;; state hash) so it knows which blocks to replay.  If we return the default response,
+;; all blocks'll be replayed.
+
+;; We know that we're in a position to replay if there's a value for `last-hash-k`
+;; within our data store.  If so, we reconstitute a trie pointing at the hash (which
+;; identifies a root node), and lookup the block height within it.
 
 (defmethod respond :abci/RequestInfo [_]
   (if-let [hash (kv/retrieve store last-hash-k)]
-    (let [trie' (reset! trie (->KVTrie {:root hash}))]
+    (let [trie' (reset! trie (map->KVTrie {:root hash}))]
       {:stickler/msg        :abci/ResponseInfo
        :last-block-app-hash hash
        :last-block-height   (util/edn-value trie' height-k)})
@@ -138,17 +142,32 @@
     {:stickler/msg :abci/ResponseCommit
      :data          hash}))
 
-;; `RequestQuery`'s `:data` key ought to hold a byte array keyword, which
-;; we'll lookup in the trie, as of the last committed block.  [[trie/search]]
-;; returns `nil` if the key is non-existent; the user'll be unable to
-;; distinguish between absent keys and explicit `nil` values --- but we don't
-;; really care.
+;; `RequestQuery`'s `:data` key ought to hold a byte array representation of
+;; a keyword, which we'll lookup in a clean trie constructed around the hash
+;; for the last committed block.  While the ABCI API allows queries at any
+;; height, the official `kvstore.go` example foregoes this --- as will we.
+;; In another concession to brevity, we'll not include Merkle proofs in our
+;; responses --- they're irrelevant to application structure.
 ;;
-;; While we can trivially generate Merkle proofs with [[trie/prove]], their
-;; shape is slightly different than expected by the ABCI client --- adjusting
-;; them isn't worth the clutter for an example application.
+;; [[trie/search]] returns `nil` if the key is non-existent;
+;; the user'll be unable to distinguish between absent keys and explicit `nil`
+;; values --- but we don't really care.
 
-;; TODO query
+(defn- query [in-k]
+  (let [k (util/bytes->edn in-k)]
+    (when (and (keyword? k) (not= k ::util/invalid))
+      (when-let [hash (kv/retrieve store last-hash-k)]
+        (let [committed (map->KVTrie {:root hash})]
+          {::value (trie/search committed (util/key->str k))})))))
+
+(defmethod respond :abci/RequestQuery [{in-k :data :as m}]
+  (if-let [m (query in-k)]
+    {:stickler/msg :abci/ResponseQuery
+     :code         :abci.code/ok
+     :key          in-k
+     :value        (::value m)}
+    {:stickler/msg :abci/ResponseQuery
+     :code         :abci.code/error}))
 
 (defn- wrap-handler
   "Wrap `handler` with application-appropriate middleware.
@@ -161,5 +180,4 @@
       mw/wrap-code-keywords))
 
 (defn -main [& args]
-  (println "Running.")
   (host/start (wrap-handler respond)))
