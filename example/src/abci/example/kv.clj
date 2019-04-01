@@ -3,10 +3,10 @@
    Tendermint's [kvstore.go](https://github.com/tendermint/tendermint/blob/master/abci/example/kvstore/kvstore.go).
 
    The application deterministically persists arbitrary EDN data structures
-   under keyword keys --- transactions are literal EDN maps containing one or
-   more keys for insertion.  There is no notion of ownership, or user identity
-   --- we're mostly trying hammer down the ABCI interaction details, and hint at
-   how a more complex system might be approached.
+  under keyword keys --- transactions are literal EDN maps containing one or
+  more keys for insertion.  There is no notion of ownership, or user identity
+  --- we're mostly trying to hammer down the ABCI interaction details, and hint
+  at how a more complex system might be approached.
 
    The application state is maintained in
    a [Merkle tree](https://en.wikipedia.org/wiki/Merkle_tree) -- specifically, an
@@ -22,6 +22,8 @@
             [sputter.state.trie       :as trie]
             [sputter.state.kv         :as kv]
             [sputter.state.kv.leveldb :as leveldb]
+            [sputter.util
+             :refer [bytes->hex]]
             [abci.example.impl.util   :as util])
   (:gen-class))
 
@@ -29,8 +31,14 @@
 ;; [[kv/KeyValueStore]] protocol --- we're going with LevelDB, as we'd like
 ;; the trie state to persist across restarts.
 
-(defonce ^:private store
-  (leveldb/map->LevelDBStore {:path "abci.example.kv"}))
+(let [path (str "abci.example.kv-"
+                (or (System/getenv "ABCI_PORT")
+                    host/default-port))]
+  (defonce ^:private store
+    (do
+      (binding [*out* *err*]
+        (println "Using LevelDB Store at" path))
+      (leveldb/map->LevelDBStore {:path path}))))
 
 (defn- map->KVTrie
   "Utility for constructing tries backed by [[store]], optionally merging in the
@@ -111,6 +119,8 @@
 (defmethod respond :abci/RequestInfo [_]
   (if-let [hash (kv/retrieve store last-hash-k)]
     (let [trie' (reset! trie (map->KVTrie {:root hash}))]
+      (binding [*out* *err*]
+        (println "Resuming from root hash" (bytes->hex hash)))
       {:stickler/msg        :abci/ResponseInfo
        :last-block-app-hash hash
        :last-block-height   (util/edn-value trie' height-k)})
@@ -198,4 +208,5 @@
       mw/wrap-code-keywords))
 
 (defn -main [& args]
-  (host/start (wrap-handler respond)))
+  (let [port (some-> (System/getenv "ABCI_PORT") Integer/parseInt)]
+    (host/start (wrap-handler respond) (when port {:port port}))))

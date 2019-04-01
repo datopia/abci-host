@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# -*- mode: sh -*-
+
+docker run -it --rm                            \
+       -u root                                 \
+       -v "/tmp/testnet:/tendermint/mytestnet" \
+       tendermint/tendermint:0.26.0            \
+       testnet                                 \
+       --v 3                                   \
+       --populate-persistent-peers             \
+       --starting-ip-address 192.167.10.2

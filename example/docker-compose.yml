@@ -1,0 +1,58 @@
+version: '2'
+
+services:
+  kv0:
+    image:      tendermint/tendermint:0.26.0
+    ports:      ['26670-26671:26656-26657']
+    user:       root
+    restart:    on-failure
+    volumes:
+      - '/tmp/testnet/node0:/tendermint'
+    entrypoint: /bin/sh -c
+    command: >
+      "ip -4 route list match 0/0 |
+       awk '{print $$3\" host.docker.internal\"}' >> /etc/hosts &&
+       tendermint node --proxy_app=tcp://host.docker.internal:26658"
+    networks:
+      localnet:
+        ipv4_address: 192.167.10.2
+
+  kv1:
+    image:      tendermint/tendermint:0.26.0
+    ports:      ['26672-26673:26656-26657']
+    user:       root
+    restart:    on-failure
+    volumes:
+      - '/tmp/testnet/node1:/tendermint'
+    entrypoint: /bin/sh -c
+    command: >
+      "ip -4 route list match 0/0 |
+       awk '{print $$3\" host.docker.internal\"}' >> /etc/hosts &&
+       tendermint node --proxy_app=tcp://host.docker.internal:26659"
+    networks:
+      localnet:
+        ipv4_address: 192.167.10.3
+
+  kv2:
+    image:      tendermint/tendermint:0.26.0
+    ports:      ['26674-26675:26656-26657']
+    user:       root
+    restart:    on-failure
+    volumes:
+      - '/tmp/testnet/node2:/tendermint'
+    entrypoint: /bin/sh -c
+    command: >
+      "ip -4 route list match 0/0 |
+       awk '{print $$3\" host.docker.internal\"}' >> /etc/hosts &&
+       tendermint node --proxy_app=tcp://host.docker.internal:26660"
+    networks:
+      localnet:
+        ipv4_address: 192.167.10.4
+
+networks:
+  localnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.167.10.0/16
