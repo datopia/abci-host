@@ -26,7 +26,7 @@ received from the Tendermint node process --- maps in, maps out.
 
 | io.datopia/abci  | Tendermint    |
 | ---------------- | ------------- |
-| 0.1.0            | 0.26.0        |
+| 0.1.*            | 0.26.0        |
 
 ## Toy Example / Walkthrough
 

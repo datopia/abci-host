@@ -3,5 +3,24 @@
 
 set -e -o pipefail
 
-hex=$(xxd -pu <<< "$1")
-curl -v "http://localhost:26657/broadcast_tx_sync?tx=0x${hex}"
+port=26657
+
+for i in "$@"
+do
+case "$i" in
+  --port=*)
+    arg_var=port
+    ;;
+  *)
+    >&2 echo "Unrecognized option: $i"
+    exit 1
+    ;;
+esac
+printf -v $arg_var "${i#*=}"
+shift
+done
+
+edn=$(cat -)
+hex=$(echo -n "$edn" | xxd -pu)
+
+curl -v "http://localhost:${port}/broadcast_tx_sync?tx=0x${hex}"
