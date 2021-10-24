@@ -87,10 +87,10 @@
 
 (def ^:private height-k "abci.example.kv/height")
 
-;; `io.datopia/abci` ensures messages received from Tendermint'll be parsed by
-;; `io.datopia/stickler`, a general purpose protobuf3 library.
+;; `org.datopia/abci` ensures messages received from Tendermint'll be parsed by
+;; `org.datopia/stickler`, a general purpose protobuf3 library.
 ;;
-;; Each message we receive from `io.datopia/abci` is represented as a map, and
+;; Each message we receive from `org.datopia/abci` is represented as a map, and
 ;; retains the `:stickler/msg` key identifying its underlying protobuf message
 ;; type. Rather than use an unwieldy `case` statement --- or similar --- to
 ;; distinguish between incoming message types, we define a multimethod
