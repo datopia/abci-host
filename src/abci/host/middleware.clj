@@ -12,7 +12,8 @@
    [future-with](https://aleph.io/codox/manifold/manifold.deferred.html#var-future-with).
    The wrapped function will always return a deferred.
 
-   The default executor may be overridden by providing `:executor` in `opts`."
+   The default executor (a pool) may be overridden by providing `:executor` in
+  `opts`."
   [f & [opts]]
   (let [exec (or (:executor opts)
                  (manifold.executor/execute-pool))]
@@ -100,7 +101,7 @@
                :abci.code/error host/CODE-ERROR}]
   (defn wrap-code-keywords
     "Wrap `f` such that the structure its deferred resolves to is walked,
-     substituting keywords in the `abci.code` namespace (`:abci.code/ok`,
+     substituting keywords in the `abci.code` namespace (`tendermint.abci.code/OK`,
      `:abci.code/error`) with the corresponding numbers (0, 1)."
     [f]
     (wrap-prewalk-replace f k->code)))

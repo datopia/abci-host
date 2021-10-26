@@ -1,4 +1,4 @@
-# io.datopia/abci-example
+# org.datopia/abci-example
 
 Currently contains a [single, literate example](src/abci/example/kv.clj), analogous to
 Tendermint's
@@ -10,7 +10,7 @@ Tendermint's
 $ lein kv
 ```
 
-The above invocation'll bind to `io.datopia/abci`'s default port: `26658`.
+The above invocation'll bind to `org.datopia/abci`'s default port: `26658`.
 Assuming you've pointed a Tendermint process at same (`--proxy_app=tcp://...`),
 you can issue transactions with `bin/insert-map`, which communicates with
 Tendermint's HTTP API over port `26657` (unless `--port=N` is specified):
@@ -23,7 +23,7 @@ $ echo '{:b ["c"]}' | bin/insert-map --port=26000'
 ## Local Cluster
 
 When developing, it's most convenient to point a single `tendermint` process at
-an `io.datopia/abci` application running in a REPL --- though it's relatively
+an `org.datopia/abci` application running in a REPL --- though it's relatively
 simple to setup a local cluster, if that's your thing.
 With [docker-compose](https://docs.docker.com/compose/), and our
 tragic [compose file](docker-compose.yml), you'll be minting blocks in no time.
