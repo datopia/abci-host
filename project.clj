@@ -8,7 +8,7 @@
                    :url  ~url}
     :dependencies [[org.clojure/clojure        "1.10.0"]
                    [aleph                      "0.4.6"]
-                   [org.datopia/stickler-codec "0.1.2-SNAPSHOT"]]
+                   [org.datopia/stickler-codec "0.1.1"]]
     :profiles
     {:dev
      {:dependencies [[org.datopia/stickler-translate "0.1.2-SNAPSHOT"]
