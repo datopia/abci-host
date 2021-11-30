@@ -1,5 +1,5 @@
 (let [url "https://github.com/datopia/abci-host/"]
-  (defproject org.datopia/abci "0.1.0-SNAPSHOT"
+  (defproject org.datopia/abci "0.1.0"
     :description  "Clojure host/server for Tendermint's ABCI protocol."
     :url          ~url
     :license      {:name "MIT License"
