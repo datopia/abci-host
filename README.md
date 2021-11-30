@@ -26,12 +26,13 @@ received from the Tendermint node process --- maps in, maps out.
 
 
 | org.datopia/abci  | Tendermint    |
-| 0.1.0-SNAPSHOT    | 0.34.12       |
 | ----------------- | ------------- |
+| 0.1.0             | 0.34.12       |
 
 There's a previous, deprecated artifact:
 
-| io.datopia.abci   |               |
+| io.datopia/abci   |               |
+| ----------------- | ------------- |
 | 0.1.*             | 0.26.0        |
 
 ## Toy Example / Walkthrough
