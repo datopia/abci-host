@@ -6,16 +6,19 @@
                    :url  "http://opensource.org/licenses/MIT"}
     :scm          {:name "git"
                    :url  ~url}
-    :dependencies [[org.clojure/clojure        "1.10.0"]
-                   [aleph                      "0.4.6"]
-                   [org.datopia/stickler-codec "0.1.1"]]
+    :dependencies [[org.clojure/clojure             "1.11.1"]
+                   [aleph                           "0.4.6"]
+                   [org.datopia/stickler-codec      "0.1.1"]
+                   [org.bouncycastle/bcprov-jdk15on "1.61"]
+                   [io.replikativ/datahike          "0.6.1555"]
+                   [com.taoensso/timbre             "6.3.1"]]
     :profiles
     {:dev
-     {:dependencies [[org.datopia/stickler-translate "0.1.2-SNAPSHOT"]
+     {:dependencies [[org.datopia/stickler-translate "0.1.1"]
                      [io.datopia/codox-theme         "0.1.0"]
                      [org.clojure/test.check         "0.10.0-alpha3"]]
       :plugins      [[lein-codox                     "0.10.5"]
-                     [org.datopia/lein-stickler      "0.1.0-SNAPSHOT"]]
+                     [org.datopia/lein-stickler      "0.1.0"]]
       :codox        {:namespaces [#"^abci\.(?!impl)"]
                      :metadata   {:doc/format :markdown}
                      :themes     [:default [:datopia {:datopia/github ~url}]]}

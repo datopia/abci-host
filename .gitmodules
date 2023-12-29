@@ -1,6 +1,6 @@
-[submodule "submodules/jtendermint"]
-	path = submodules/jtendermint
-	url = https://github.com/jTendermint/jabci.git
 [submodule "submodules/protobuf"]
 	path = submodules/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
+[submodule "submodules/tendermint"]
+	path = submodules/tendermint
+	url = https://github.com/tendermint/tendermint/
