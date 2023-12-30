@@ -5,6 +5,7 @@
             [clojure.walk       :as walk]
             [manifold.deferred  :as d]
             [manifold.executor]
+            [taoensso.timbre    :as log]
             [abci.host          :as host :refer [schema]]))
 
 (defn wrap-synchronous

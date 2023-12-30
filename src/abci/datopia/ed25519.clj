@@ -48,7 +48,7 @@
 
 (defn- verifier [public-key]
   (doto (Ed25519Signer.)
-    (.init false (Ed25519PrivateKeyParameters. public-key 0))))
+    (.init false (Ed25519PublicKeyParameters. public-key 0))))
 
 (defprotocol Signer
   (sign [_ msg-bytes]))

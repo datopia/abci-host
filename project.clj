@@ -11,7 +11,8 @@
                    [org.datopia/stickler-codec      "0.1.1"]
                    [org.bouncycastle/bcprov-jdk15on "1.61"]
                    [io.replikativ/datahike          "0.6.1555"]
-                   [com.taoensso/timbre             "6.3.1"]]
+                   [com.taoensso/timbre             "6.3.1"]
+                   [clj-http                        "3.12.3"]]
     :profiles
     {:dev
      {:dependencies [[org.datopia/stickler-translate "0.1.1"]
