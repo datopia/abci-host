@@ -6,7 +6,7 @@
             [taoensso.timbre      :as log]))
 
 (defn envelop [tx {pub :public prv :private}]
-  (let [tx  {:tx tx :datopia/from (b62-encode pub)}
+  (let [tx  {:datoms tx :datopia/from (b62-encode pub)}
         sig (curve/sign prv (curve/digest (.getBytes (pr-str tx))))]
     (assoc tx :datopia/signature (b62-encode sig))))
 
@@ -20,6 +20,6 @@
 (comment
   (defonce keypair (curve/generate-keypair))
 
-  (def tx (envelop {:xyz 1234} keypair))
+  (def tx (envelop [] keypair))
 
   (localnode-submit! tx))
