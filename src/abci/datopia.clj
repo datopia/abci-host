@@ -97,10 +97,9 @@
         1))))
 
 (defn- tx-datoms [tx]
-  (let [tempid (d/tempid -1)
-        synth  [[:db/add tempid :tx/signatory     (:datopia/from      tx)]
-                [:db/add tempid :tx/signature     (:datopia/signature tx)]
-                [:db/add tempid :datopia/identity (:datopia/from      tx)]]]
+  (let [synth  [[:db/add -1 :tx/signatory     (:datopia/from      tx)]
+                [:db/add -1 :tx/signature     (:datopia/signature tx)]
+                [:db/add -1 :datopia/identity (:datopia/from      tx)]]]
     (into synth
       (:datoms tx))))
 
