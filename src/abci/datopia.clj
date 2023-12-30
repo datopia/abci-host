@@ -49,9 +49,9 @@
     (binding [d.tools/get-time-ms (constantly (java.util.Date. 0))]
       (d/transact conn schema))))
 
-(def ^:private conn     (d/connect config))
-(def ^:private cur-time (atom 0))
-(def ^:private tx-block (atom []))
+(def ^:private conn      (d/connect config))
+(def ^:private cur-time  (atom 0))
+(def ^:private tx-blocks (atom []))
 
 (defn- cur-hash []
   (-> @conn
@@ -78,7 +78,7 @@
 
 (defmethod respond :abci/RequestBeginBlock [{{:keys [time height]} :header}]
   (reset! cur-time (* (:seconds time 1000)))
-  (swap! tx-block conj [:db/add (d/tempid -1) :datopia/height height])
+  (swap! tx-blocks conj [[:db/add -1 :datopia/height height]])
   ::mw/default)
 
 (defn- bytes->tx [tx-bytes]
@@ -97,18 +97,18 @@
         1))))
 
 (defn- tx-datoms [tx]
-  (let [tempid (d/tempid -1)]
-    (let [synth [[:db/add tempid :tx/signatory     (:datopia/from      tx)]
-                 [:db/add tempid :tx/signature     (:datopia/signature tx)]
-                 [:db/add tempid :datopia/identity (:datopia/from      tx)]]]
-      (into synth
-        (:datoms tx)))))
+  (let [tempid (d/tempid -1)
+        synth  [[:db/add tempid :tx/signatory     (:datopia/from      tx)]
+                [:db/add tempid :tx/signature     (:datopia/signature tx)]
+                [:db/add tempid :datopia/identity (:datopia/from      tx)]]]
+    (into synth
+      (:datoms tx))))
 
 (defmethod respond :abci/RequestDeliverTx [{tx :tx}]
   (let [tx   (bytes->tx tx)
-        code (tx->code tx)]
+        code (tx->code  tx)]
     (when (zero? code)
-      (swap! tx-block into (tx-datoms tx)))
+      (swap! tx-blocks conj (tx-datoms tx)))
     {:stickler/msg :abci/ResponseDeliverTx
      :code          code}))
 
@@ -119,8 +119,9 @@
 
 (defmethod respond :abci/RequestCommit [_]
   (binding [d.tools/get-time-ms (constantly (java.util.Date. ^long @cur-time))]
-    (d/transact conn @tx-block))
-  (swap! tx-block empty)
+    (doseq [tx-block @tx-blocks]
+      (d/transact conn tx-block)))
+  (swap! tx-blocks empty)
   {:stickler/msg :abci/ResponseCommit
    :data          (.getBytes ^String (cur-hash) "UTF-8")})
 
