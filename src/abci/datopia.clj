@@ -20,8 +20,7 @@
                      :path     "/tmp/datahike"}
              :keep-history?      true
              :schema-flexibility :write
-             :crypto-hash?       true
-             :attribute-refs?    true})
+             :crypto-hash?       true})
 
 (def schema
   [{:db/ident       :datopia/height
@@ -53,7 +52,6 @@
 (def ^:private conn     (d/connect config))
 (def ^:private cur-time (atom 0))
 (def ^:private tx-block (atom []))
-(def ^:private tx-addrs (atom #{}))
 
 (defn- cur-hash []
   (-> @conn
@@ -80,7 +78,7 @@
 
 (defmethod respond :abci/RequestBeginBlock [{{:keys [time height]} :header}]
   (reset! cur-time (* (:seconds time 1000)))
-  (swap! tx-block conj {:db/id -1 :datopia/height height})
+  (swap! tx-block conj [:db/add (d/tempid -1) :datopia/height height])
   ::mw/default)
 
 (defn- bytes->tx [tx-bytes]
@@ -99,7 +97,7 @@
         1))))
 
 (defn- tx-datoms [tx]
-  (let [tempid (d/tempid)]
+  (let [tempid (d/tempid -1)]
     (let [synth [[:db/add tempid :tx/signatory     (:datopia/from      tx)]
                  [:db/add tempid :tx/signature     (:datopia/signature tx)]
                  [:db/add tempid :datopia/identity (:datopia/from      tx)]]]
