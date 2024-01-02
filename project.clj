@@ -9,10 +9,7 @@
     :dependencies [[org.clojure/clojure             "1.11.1"]
                    [aleph                           "0.4.6"]
                    [org.datopia/stickler-codec      "0.1.1"]
-                   [org.bouncycastle/bcprov-jdk15on "1.61"]
-                   [io.replikativ/datahike          "0.6.1555"]
-                   [com.taoensso/timbre             "6.3.1"]
-                   [clj-http                        "3.12.3"]]
+                   [com.taoensso/timbre             "6.3.1"]]
     :profiles
     {:dev
      {:dependencies [[org.datopia/stickler-translate "0.1.1"]
