@@ -1,6 +1,6 @@
 [submodule "submodules/protobuf"]
 	path = submodules/protobuf
 	url = https://github.com/protocolbuffers/protobuf.git
-[submodule "submodules/tendermint"]
-	path = submodules/tendermint
-	url = https://github.com/tendermint/tendermint/
+[submodule "submodules/cometbft"]
+	path = submodules/cometbft
+	url = https://github.com/cometbft/cometbft.git

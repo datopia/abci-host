@@ -8,7 +8,7 @@
    [clojure.java.io   :as io]
    [stickler.codec    :as codec]
    [abci.impl.codec
-    :refer [long->signed-varint64]]
+    :refer [long->varint64]]
    [abci.impl.host
     :refer [stream-splitter]]))
 
@@ -33,7 +33,7 @@
 
 (defn- respond! [s resp]
   (let [^bytes bs (encode-bytes resp)]
-    (s/put-all! s [(long->signed-varint64 (alength bs)) bs])))
+    (s/put-all! s [(long->varint64 (alength bs)) bs])))
 
 (defn- req->conn-name [req]
   (let [req ((:stickler.one-of/value req) req)]
@@ -97,7 +97,7 @@
         opts     (as-> opts o
                    (merge {:port default-port} o {:raw-stream? true})
                    (assoc o :on-error (partial on-error server)))
-        f      (abci-handler-wrapper handler opts)]
+        f        (abci-handler-wrapper handler opts)]
     (reset! server (*start-server* f opts))))
 
 (defn stop

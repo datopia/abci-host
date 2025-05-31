@@ -3,30 +3,87 @@
   {:type {:tag 1, :scalar? true, :type :string, :wire-type 2},
    :key {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
    :data {:tag 3, :scalar? true, :type :bytes, :wire-type 2}}},
- :abci/ResponseBeginBlock
+ :abci/ResponseExtendVote
  {:fields
-  {:events
-   {:tag 1,
-    :repeated? true,
-    :type :abci/Event,
-    :wire-type 2}}},
+  {:vote-extension
+   {:tag 1, :scalar? true, :type :bytes, :wire-type 2}}},
  :abci/ResponseLoadSnapshotChunk
  {:fields
   {:chunk {:tag 1, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci.ResponseVerifyVoteExtension/VerifyStatus
+ {:enum? true, :fields {:UNKNOWN 0, :ACCEPT 1, :REJECT 2}},
  :abci/RequestFlush {},
  :abci/ValidatorUpdate
  {:fields
   {:pub-key {:tag 1, :type :crypto/PublicKey, :wire-type 2},
    :power {:tag 2, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/RequestProcessProposal
+ {:fields
+  {:txs
+   {:tag 1,
+    :repeated? true,
+    :scalar? true,
+    :type :bytes,
+    :wire-type 2},
+   :proposed-last-commit
+   {:tag 2, :type :abci/CommitInfo, :wire-type 2},
+   :misbehavior
+   {:tag 3,
+    :repeated? true,
+    :type :abci/Misbehavior,
+    :wire-type 2},
+   :hash {:tag 4, :scalar? true, :type :bytes, :wire-type 2},
+   :height {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :time {:tag 6, :type :google.protobuf/Timestamp, :wire-type 2},
+   :next-validators-hash
+   {:tag 7, :scalar? true, :type :bytes, :wire-type 2},
+   :proposer-address
+   {:tag 8, :scalar? true, :type :bytes, :wire-type 2}}},
  :abci/ResponseEcho
  {:fields
   {:message {:tag 1, :scalar? true, :type :string, :wire-type 2}}},
  :abci/ResponseFlush {},
  :abci/EventAttribute
  {:fields
-  {:key {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
-   :value {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
+  {:key {:tag 1, :scalar? true, :type :string, :wire-type 2},
+   :value {:tag 2, :scalar? true, :type :string, :wire-type 2},
    :index {:tag 3, :scalar? true, :type :bool, :wire-type 0}}},
+ :abci/RequestFinalizeBlock
+ {:fields
+  {:txs
+   {:tag 1,
+    :repeated? true,
+    :scalar? true,
+    :type :bytes,
+    :wire-type 2},
+   :decided-last-commit
+   {:tag 2, :type :abci/CommitInfo, :wire-type 2},
+   :misbehavior
+   {:tag 3,
+    :repeated? true,
+    :type :abci/Misbehavior,
+    :wire-type 2},
+   :hash {:tag 4, :scalar? true, :type :bytes, :wire-type 2},
+   :height {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :time {:tag 6, :type :google.protobuf/Timestamp, :wire-type 2},
+   :next-validators-hash
+   {:tag 7, :scalar? true, :type :bytes, :wire-type 2},
+   :proposer-address
+   {:tag 8, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/ExecTxResult
+ {:fields
+  {:code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
+   :data {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
+   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
+   :info {:tag 4, :scalar? true, :type :string, :wire-type 2},
+   :gas-wanted {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :gas-used {:tag 6, :scalar? true, :type :int64, :wire-type 0},
+   :events
+   {:tag 7,
+    :repeated? true,
+    :type :abci/Event,
+    :wire-type 2},
+   :codespace {:tag 8, :scalar? true, :type :string, :wire-type 2}}},
  :abci/ResponseInfo
  {:fields
   {:data {:tag 1, :scalar? true, :type :string, :wire-type 2},
@@ -43,60 +100,26 @@
     :repeated? true,
     :type :abci/Snapshot,
     :wire-type 2}}},
- :abci/Evidence
- {:fields
-  {:type {:tag 1, :type :abci/EvidenceType, :wire-type 0},
-   :validator {:tag 2, :type :abci/Validator, :wire-type 2},
-   :height {:tag 3, :scalar? true, :type :int64, :wire-type 0},
-   :time {:tag 4, :type :google.protobuf/Timestamp, :wire-type 2},
-   :total-voting-power
-   {:tag 5, :scalar? true, :type :int64, :wire-type 0}}},
  :abci/ResponseInitChain
  {:fields
   {:consensus-params
-   {:tag 1, :type :abci/ConsensusParams, :wire-type 2},
+   {:tag 1, :type :types/ConsensusParams, :wire-type 2},
    :validators
    {:tag 2,
     :repeated? true,
     :type :abci/ValidatorUpdate,
     :wire-type 2},
    :app-hash {:tag 3, :scalar? true, :type :bytes, :wire-type 2}}},
- :types/Header
- {:fields
-  {:last-block-id
-   {:tag 5, :type :types/BlockID, :wire-type 2},
-   :last-commit-hash
-   {:tag 6, :scalar? true, :type :bytes, :wire-type 2},
-   :consensus-hash
-   {:tag 10, :scalar? true, :type :bytes, :wire-type 2},
-   :data-hash {:tag 7, :scalar? true, :type :bytes, :wire-type 2},
-   :evidence-hash {:tag 13, :scalar? true, :type :bytes, :wire-type 2},
-   :app-hash {:tag 11, :scalar? true, :type :bytes, :wire-type 2},
-   :time {:tag 4, :type :google.protobuf/Timestamp, :wire-type 2},
-   :proposer-address
-   {:tag 14, :scalar? true, :type :bytes, :wire-type 2},
-   :last-results-hash
-   {:tag 12, :scalar? true, :type :bytes, :wire-type 2},
-   :chain-id {:tag 2, :scalar? true, :type :string, :wire-type 2},
-   :validators-hash
-   {:tag 8, :scalar? true, :type :bytes, :wire-type 2},
-   :version
-   {:tag 1, :type :version/Consensus, :wire-type 2},
-   :next-validators-hash
-   {:tag 9, :scalar? true, :type :bytes, :wire-type 2},
-   :height {:tag 3, :scalar? true, :type :int64, :wire-type 0}}},
  :abci/ResponseOfferSnapshot
  {:fields
   {:result
    {:tag 1,
     :type :abci.ResponseOfferSnapshot/Result,
     :wire-type 0}}},
- :abci/ResponseSetOption
- {:fields
-  {:code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
-   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
-   :info {:tag 4, :scalar? true, :type :string, :wire-type 2}}},
  :abci/RequestCommit {},
+ :abci/MisbehaviorType
+ {:enum? true,
+  :fields {:UNKNOWN 0, :DUPLICATE-VOTE 1, :LIGHT-CLIENT-ATTACK 2}},
  :abci/ResponseApplySnapshotChunk
  {:fields
   {:result
@@ -123,19 +146,34 @@
     :type :abci/RequestFlush,
     :wire-type 2,
     :one-of :value},
+   :extend-vote
+   {:tag 18,
+    :type :abci/RequestExtendVote,
+    :wire-type 2,
+    :one-of :value},
    :offer-snapshot
    {:tag 13,
     :type :abci/RequestOfferSnapshot,
     :wire-type 2,
     :one-of :value},
-   :end-block
-   {:tag 10,
-    :type :abci/RequestEndBlock,
+   :process-proposal
+   {:tag 17,
+    :type :abci/RequestProcessProposal,
     :wire-type 2,
     :one-of :value},
-   :deliver-tx
-   {:tag 9,
-    :type :abci/RequestDeliverTx,
+   :verify-vote-extension
+   {:tag 19,
+    :type :abci/RequestVerifyVoteExtension,
+    :wire-type 2,
+    :one-of :value},
+   :finalize-block
+   {:tag 20,
+    :type :abci/RequestFinalizeBlock,
+    :wire-type 2,
+    :one-of :value},
+   :prepare-proposal
+   {:tag 16,
+    :type :abci/RequestPrepareProposal,
     :wire-type 2,
     :one-of :value},
    :check-tx
@@ -158,19 +196,9 @@
     :type :abci/RequestInfo,
     :wire-type 2,
     :one-of :value},
-   :set-option
-   {:tag 4,
-    :type :abci/RequestSetOption,
-    :wire-type 2,
-    :one-of :value},
    :init-chain
    {:tag 5,
     :type :abci/RequestInitChain,
-    :wire-type 2,
-    :one-of :value},
-   :begin-block
-   {:tag 7,
-    :type :abci/RequestBeginBlock,
     :wire-type 2,
     :one-of :value},
    :query
@@ -193,21 +221,16 @@
     :type :abci/RequestApplySnapshotChunk,
     :wire-type 2,
     :one-of :value}}},
- :version/Consensus
+ :abci/ResponsePrepareProposal
  {:fields
-  {:block {:tag 1, :scalar? true, :type :uint64, :wire-type 0},
-   :app {:tag 2, :scalar? true, :type :uint64, :wire-type 0}}},
- :abci/LastCommitInfo
- {:fields
-  {:round {:tag 1, :scalar? true, :type :int32, :wire-type 0},
-   :votes
-   {:tag 2,
+  {:txs
+   {:tag 1,
     :repeated? true,
-    :type :abci/VoteInfo,
+    :scalar? true,
+    :type :bytes,
     :wire-type 2}}},
- :abci/EvidenceType
- {:enum? true,
-  :fields {:UNKNOWN 0, :DUPLICATE-VOTE 1, :LIGHT-CLIENT-ATTACK 2}},
+ :abci.ResponseProcessProposal/ProposalStatus
+ {:enum? true, :fields {:UNKNOWN 0, :ACCEPT 1, :REJECT 2}},
  :types/EvidenceParams
  {:fields
   {:max-age-num-blocks
@@ -215,20 +238,33 @@
    :max-age-duration
    {:tag 2, :type :google.protobuf/Duration, :wire-type 2},
    :max-bytes {:tag 3, :scalar? true, :type :int64, :wire-type 0}}},
+ :abci/RequestPrepareProposal
+ {:fields
+  {:max-tx-bytes {:tag 1, :scalar? true, :type :int64, :wire-type 0},
+   :txs
+   {:tag 2,
+    :repeated? true,
+    :scalar? true,
+    :type :bytes,
+    :wire-type 2},
+   :local-last-commit
+   {:tag 3, :type :abci/ExtendedCommitInfo, :wire-type 2},
+   :misbehavior
+   {:tag 4,
+    :repeated? true,
+    :type :abci/Misbehavior,
+    :wire-type 2},
+   :height {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :time {:tag 6, :type :google.protobuf/Timestamp, :wire-type 2},
+   :next-validators-hash
+   {:tag 7, :scalar? true, :type :bytes, :wire-type 2},
+   :proposer-address
+   {:tag 8, :scalar? true, :type :bytes, :wire-type 2}}},
  :abci/RequestApplySnapshotChunk
  {:fields
   {:index {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
    :chunk {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
    :sender {:tag 3, :scalar? true, :type :string, :wire-type 2}}},
- :abci/ConsensusParams
- {:fields
-  {:block {:tag 1, :type :abci/BlockParams, :wire-type 2},
-   :evidence
-   {:tag 2, :type :types/EvidenceParams, :wire-type 2},
-   :validator
-   {:tag 3, :type :types/ValidatorParams, :wire-type 2},
-   :version
-   {:tag 4, :type :types/VersionParams, :wire-type 2}}},
  :abci/Snapshot
  {:fields
   {:height {:tag 1, :scalar? true, :type :uint64, :wire-type 0},
@@ -238,8 +274,7 @@
    :metadata {:tag 5, :scalar? true, :type :bytes, :wire-type 2}}},
  :abci/ResponseCommit
  {:fields
-  {:data {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
-   :retain-height
+  {:retain-height
    {:tag 3, :scalar? true, :type :int64, :wire-type 0}}},
  :crypto/PublicKey
  {:fields
@@ -251,6 +286,20 @@
  {:fields
   {:snapshot {:tag 1, :type :abci/Snapshot, :wire-type 2},
    :app-hash {:tag 2, :scalar? true, :type :bytes, :wire-type 2}}},
+ :types/ABCIParams
+ {:fields
+  {:vote-extensions-enable-height
+   {:tag 1, :scalar? true, :type :int64, :wire-type 0}}},
+ :types/ConsensusParams
+ {:fields
+  {:block {:tag 1, :type :types/BlockParams, :wire-type 2},
+   :evidence
+   {:tag 2, :type :types/EvidenceParams, :wire-type 2},
+   :validator
+   {:tag 3, :type :types/ValidatorParams, :wire-type 2},
+   :version
+   {:tag 4, :type :types/VersionParams, :wire-type 2},
+   :abci {:tag 5, :type :types/ABCIParams, :wire-type 2}}},
  :abci/ResponseQuery
  {:fields
   {:key {:tag 6, :scalar? true, :type :bytes, :wire-type 2},
@@ -286,7 +335,7 @@
   {:time {:tag 1, :type :google.protobuf/Timestamp, :wire-type 2},
    :chain-id {:tag 2, :scalar? true, :type :string, :wire-type 2},
    :consensus-params
-   {:tag 3, :type :abci/ConsensusParams, :wire-type 2},
+   {:tag 3, :type :types/ConsensusParams, :wire-type 2},
    :validators
    {:tag 4,
     :repeated? true,
@@ -296,9 +345,28 @@
    {:tag 5, :scalar? true, :type :bytes, :wire-type 2},
    :initial-height
    {:tag 6, :scalar? true, :type :int64, :wire-type 0}}},
- :abci/RequestDeliverTx
- {:fields {:tx {:tag 1, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/ResponseProcessProposal
+ {:fields
+  {:status
+   {:tag 1,
+    :type :abci.ResponseProcessProposal/ProposalStatus,
+    :wire-type 0}}},
  :abci/RequestListSnapshots {},
+ :abci/ResponseVerifyVoteExtension
+ {:fields
+  {:status
+   {:tag 1,
+    :type :abci.ResponseVerifyVoteExtension/VerifyStatus,
+    :wire-type 0}}},
+ :abci/Misbehavior
+ {:fields
+  {:type
+   {:tag 1, :type :abci/MisbehaviorType, :wire-type 0},
+   :validator {:tag 2, :type :abci/Validator, :wire-type 2},
+   :height {:tag 3, :scalar? true, :type :int64, :wire-type 0},
+   :time {:tag 4, :type :google.protobuf/Timestamp, :wire-type 2},
+   :total-voting-power
+   {:tag 5, :scalar? true, :type :int64, :wire-type 0}}},
  :abci/RequestLoadSnapshotChunk
  {:fields
   {:height {:tag 1, :scalar? true, :type :uint64, :wire-type 0},
@@ -307,51 +375,28 @@
  :abci/ResponseException
  {:fields
   {:error {:tag 1, :scalar? true, :type :string, :wire-type 2}}},
- :abci/RequestEndBlock
- {:fields
-  {:height {:tag 1, :scalar? true, :type :int64, :wire-type 0}}},
  :abci/VoteInfo
  {:fields
   {:validator {:tag 1, :type :abci/Validator, :wire-type 2},
-   :signed-last-block
-   {:tag 2, :scalar? true, :type :bool, :wire-type 0}}},
+   :block-id-flag
+   {:tag 3, :type :types/BlockIDFlag, :wire-type 0}}},
  :abci/RequestEcho
  {:fields
   {:message {:tag 1, :scalar? true, :type :string, :wire-type 2}}},
- :abci/RequestBeginBlock
- {:fields
-  {:hash {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
-   :header {:tag 2, :type :types/Header, :wire-type 2},
-   :last-commit-info
-   {:tag 3, :type :abci/LastCommitInfo, :wire-type 2},
-   :byzantine-validators
-   {:tag 4,
-    :repeated? true,
-    :type :abci/Evidence,
-    :wire-type 2}}},
- :types/BlockID
- {:fields
-  {:hash {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
-   :part-set-header
-   {:tag 2, :type :types/PartSetHeader, :wire-type 2}}},
  :abci/ResponseCheckTx
  {:fields
-  {:events
+  {:code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
+   :data {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
+   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
+   :info {:tag 4, :scalar? true, :type :string, :wire-type 2},
+   :gas-wanted {:tag 5, :scalar? true, :type :int64, :wire-type 0},
+   :gas-used {:tag 6, :scalar? true, :type :int64, :wire-type 0},
+   :events
    {:tag 7,
     :repeated? true,
     :type :abci/Event,
     :wire-type 2},
-   :gas-wanted {:tag 5, :scalar? true, :type :int64, :wire-type 0},
-   :gas-used {:tag 6, :scalar? true, :type :int64, :wire-type 0},
-   :priority {:tag 10, :scalar? true, :type :int64, :wire-type 0},
-   :sender {:tag 9, :scalar? true, :type :string, :wire-type 2},
-   :info {:tag 4, :scalar? true, :type :string, :wire-type 2},
-   :code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
-   :mempool-error
-   {:tag 11, :scalar? true, :type :string, :wire-type 2},
-   :codespace {:tag 8, :scalar? true, :type :string, :wire-type 2},
-   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
-   :data {:tag 2, :scalar? true, :type :bytes, :wire-type 2}}},
+   :codespace {:tag 8, :scalar? true, :type :string, :wire-type 2}}},
  :abci/Response
  {:fields
   {:flush
@@ -359,19 +404,34 @@
     :type :abci/ResponseFlush,
     :wire-type 2,
     :one-of :value},
+   :extend-vote
+   {:tag 19,
+    :type :abci/ResponseExtendVote,
+    :wire-type 2,
+    :one-of :value},
    :offer-snapshot
    {:tag 14,
     :type :abci/ResponseOfferSnapshot,
     :wire-type 2,
     :one-of :value},
-   :end-block
-   {:tag 11,
-    :type :abci/ResponseEndBlock,
+   :process-proposal
+   {:tag 18,
+    :type :abci/ResponseProcessProposal,
     :wire-type 2,
     :one-of :value},
-   :deliver-tx
-   {:tag 10,
-    :type :abci/ResponseDeliverTx,
+   :verify-vote-extension
+   {:tag 20,
+    :type :abci/ResponseVerifyVoteExtension,
+    :wire-type 2,
+    :one-of :value},
+   :finalize-block
+   {:tag 21,
+    :type :abci/ResponseFinalizeBlock,
+    :wire-type 2,
+    :one-of :value},
+   :prepare-proposal
+   {:tag 17,
+    :type :abci/ResponsePrepareProposal,
     :wire-type 2,
     :one-of :value},
    :check-tx
@@ -394,11 +454,6 @@
     :type :abci/ResponseInfo,
     :wire-type 2,
     :one-of :value},
-   :set-option
-   {:tag 5,
-    :type :abci/ResponseSetOption,
-    :wire-type 2,
-    :one-of :value},
    :exception
    {:tag 1,
     :type :abci/ResponseException,
@@ -407,11 +462,6 @@
    :init-chain
    {:tag 6,
     :type :abci/ResponseInitChain,
-    :wire-type 2,
-    :one-of :value},
-   :begin-block
-   {:tag 8,
-    :type :abci/ResponseBeginBlock,
     :wire-type 2,
     :one-of :value},
    :query
@@ -434,18 +484,84 @@
     :type :abci/ResponseApplySnapshotChunk,
     :wire-type 2,
     :one-of :value}}},
+ :abci/ResponseFinalizeBlock
+ {:fields
+  {:events
+   {:tag 1,
+    :repeated? true,
+    :type :abci/Event,
+    :wire-type 2},
+   :tx-results
+   {:tag 2,
+    :repeated? true,
+    :type :abci/ExecTxResult,
+    :wire-type 2},
+   :validator-updates
+   {:tag 3,
+    :repeated? true,
+    :type :abci/ValidatorUpdate,
+    :wire-type 2},
+   :consensus-param-updates
+   {:tag 4, :type :types/ConsensusParams, :wire-type 2},
+   :app-hash {:tag 5, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/RequestVerifyVoteExtension
+ {:fields
+  {:hash {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
+   :validator-address
+   {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
+   :height {:tag 3, :scalar? true, :type :int64, :wire-type 0},
+   :vote-extension
+   {:tag 4, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/ExtendedVoteInfo
+ {:fields
+  {:validator {:tag 1, :type :abci/Validator, :wire-type 2},
+   :vote-extension {:tag 3, :scalar? true, :type :bytes, :wire-type 2},
+   :extension-signature
+   {:tag 4, :scalar? true, :type :bytes, :wire-type 2},
+   :block-id-flag
+   {:tag 5, :type :types/BlockIDFlag, :wire-type 0}}},
+ :abci/RequestExtendVote
+ {:fields
+  {:hash {:tag 1, :scalar? true, :type :bytes, :wire-type 2},
+   :height {:tag 2, :scalar? true, :type :int64, :wire-type 0},
+   :time {:tag 3, :type :google.protobuf/Timestamp, :wire-type 2},
+   :txs
+   {:tag 4,
+    :repeated? true,
+    :scalar? true,
+    :type :bytes,
+    :wire-type 2},
+   :proposed-last-commit
+   {:tag 5, :type :abci/CommitInfo, :wire-type 2},
+   :misbehavior
+   {:tag 6,
+    :repeated? true,
+    :type :abci/Misbehavior,
+    :wire-type 2},
+   :next-validators-hash
+   {:tag 7, :scalar? true, :type :bytes, :wire-type 2},
+   :proposer-address
+   {:tag 8, :scalar? true, :type :bytes, :wire-type 2}}},
+ :abci/ExtendedCommitInfo
+ {:fields
+  {:round {:tag 1, :scalar? true, :type :int32, :wire-type 0},
+   :votes
+   {:tag 2,
+    :repeated? true,
+    :type :abci/ExtendedVoteInfo,
+    :wire-type 2}}},
+ :abci/CommitInfo
+ {:fields
+  {:round {:tag 1, :scalar? true, :type :int32, :wire-type 0},
+   :votes
+   {:tag 2,
+    :repeated? true,
+    :type :abci/VoteInfo,
+    :wire-type 2}}},
  :google.protobuf/Duration
  {:fields
   {:seconds {:tag 1, :scalar? true, :type :int64, :wire-type 0},
    :nanos {:tag 2, :scalar? true, :type :int32, :wire-type 0}}},
- :abci/BlockParams
- {:fields
-  {:max-bytes {:tag 1, :scalar? true, :type :int64, :wire-type 0},
-   :max-gas {:tag 2, :scalar? true, :type :int64, :wire-type 0}}},
- :types/PartSetHeader
- {:fields
-  {:total {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
-   :hash {:tag 2, :scalar? true, :type :bytes, :wire-type 2}}},
  :google.protobuf/Timestamp
  {:fields
   {:seconds {:tag 1, :scalar? true, :type :int64, :wire-type 0},
@@ -463,20 +579,10 @@
    :REJECT 3,
    :REJECT-FORMAT 4,
    :REJECT-SENDER 5}},
- :abci/ResponseDeliverTx
+ :types/BlockParams
  {:fields
-  {:code {:tag 1, :scalar? true, :type :uint32, :wire-type 0},
-   :data {:tag 2, :scalar? true, :type :bytes, :wire-type 2},
-   :log {:tag 3, :scalar? true, :type :string, :wire-type 2},
-   :info {:tag 4, :scalar? true, :type :string, :wire-type 2},
-   :gas-wanted {:tag 5, :scalar? true, :type :int64, :wire-type 0},
-   :gas-used {:tag 6, :scalar? true, :type :int64, :wire-type 0},
-   :events
-   {:tag 7,
-    :repeated? true,
-    :type :abci/Event,
-    :wire-type 2},
-   :codespace {:tag 8, :scalar? true, :type :string, :wire-type 2}}},
+  {:max-bytes {:tag 1, :scalar? true, :type :int64, :wire-type 0},
+   :max-gas {:tag 2, :scalar? true, :type :int64, :wire-type 0}}},
  :abci/CheckTxType
  {:enum? true, :fields {:NEW 0, :RECHECK 1}},
  :crypto/ProofOps
@@ -486,13 +592,8 @@
     :repeated? true,
     :type :crypto/ProofOp,
     :wire-type 2}}},
- :abci/RequestSetOption
- {:fields
-  {:key {:tag 1, :scalar? true, :type :string, :wire-type 2},
-   :value {:tag 2, :scalar? true, :type :string, :wire-type 2}}},
  :types/VersionParams
- {:fields
-  {:app-version {:tag 1, :scalar? true, :type :uint64, :wire-type 0}}},
+ {:fields {:app {:tag 1, :scalar? true, :type :uint64, :wire-type 0}}},
  :types/ValidatorParams
  {:fields
   {:pub-key-types
@@ -501,6 +602,13 @@
     :scalar? true,
     :type :string,
     :wire-type 2}}},
+ :types/BlockIDFlag
+ {:enum? true,
+  :fields
+  {:BLOCK-ID-FLAG-UNKNOWN 0,
+   :BLOCK-ID-FLAG-ABSENT 1,
+   :BLOCK-ID-FLAG-COMMIT 2,
+   :BLOCK-ID-FLAG-NIL 3}},
  :abci.ResponseApplySnapshotChunk/Result
  {:enum? true,
   :fields
@@ -510,22 +618,9 @@
    :RETRY 3,
    :RETRY-SNAPSHOT 4,
    :REJECT-SNAPSHOT 5}},
- :abci/ResponseEndBlock
- {:fields
-  {:validator-updates
-   {:tag 1,
-    :repeated? true,
-    :type :abci/ValidatorUpdate,
-    :wire-type 2},
-   :consensus-param-updates
-   {:tag 2, :type :abci/ConsensusParams, :wire-type 2},
-   :events
-   {:tag 3,
-    :repeated? true,
-    :type :abci/Event,
-    :wire-type 2}}},
  :abci/RequestInfo
  {:fields
   {:version {:tag 1, :scalar? true, :type :string, :wire-type 2},
    :block-version {:tag 2, :scalar? true, :type :uint64, :wire-type 0},
-   :p2p-version {:tag 3, :scalar? true, :type :uint64, :wire-type 0}}}}
+   :p2p-version {:tag 3, :scalar? true, :type :uint64, :wire-type 0},
+   :abci-version {:tag 4, :scalar? true, :type :string, :wire-type 2}}}}
