@@ -7,7 +7,7 @@
                  :url  "https://github.com/datopia/abci-example"}
   :aot          [abci.example.kv]
   :dependencies [[org.clojure/clojure "1.10.0"]
-                 [org.datopia/abci    "0.1.0-SNAPSHOT"]
+                 [org.datopia/abci    "0.2.0-SNAPSHOT"]
                  [io.nervous/sputter  "0.1.0"]]
   :profiles     {:kv  {:main abci.example.kv}}
   :aliases      {"kv" ["with-profile" "+kv" "run" "-m" "abci.example.kv"]})

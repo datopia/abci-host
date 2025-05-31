@@ -8,7 +8,7 @@
   (d/loop []
     (when (.isReadable buf)
       (.markReaderIndex buf)
-      (if-let [length (codec/read-signed-varint64 buf)]
+      (if-let [length (codec/read-varint64 buf)]
         (if (.isReadable buf length)
           (let [out (byte-array length)]
             (.readBytes buf out)
