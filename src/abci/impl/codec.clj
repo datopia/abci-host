@@ -1,12 +1,7 @@
 (ns abci.impl.codec
-    (:require [manifold.deferred :as d]
-              [manifold.stream   :as s])
-    (:import [io.netty.buffer ByteBuf]))
+  (:import [io.netty.buffer ByteBuf]))
 
-(defn- unzigzag64 [n]
-  (bit-xor (unsigned-bit-shift-right n 1) (- (bit-and n 1))))
-
-(defn read-signed-varint64 [^ByteBuf buf]
+(defn read-varint64 [^ByteBuf buf]
   (loop [shift 0
          out   0]
     (when (.isReadable buf)
@@ -16,16 +11,13 @@
                                (unchecked-long (bit-and b 0x7F))
                                shift))]
           (if (zero? (bit-and b 0x80))
-            (unzigzag64 out)
+            out
             (recur (+ shift 7) out)))
         (throw (ex-info "Invalid varint." {:shift shift}))))))
 
-(defn- zigzag64 [n]
-  (bit-xor (bit-shift-left n 1) (bit-shift-right n 63)))
-
-(defn long->signed-varint64 [n]
+(defn long->varint64 [n]
   (let [out (java.io.ByteArrayOutputStream.)]
-    (loop [n (zigzag64 n)]
+    (loop [n n]
       (if (zero? (bit-and n (bit-not 0x7F)))
         (do (.write out (unchecked-int n))
             (.toByteArray out))

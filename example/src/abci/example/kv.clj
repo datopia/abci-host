@@ -126,14 +126,6 @@
        :last-block-height   (util/edn-value trie' height-k)})
     ::mw/default))
 
-;; When beginning a new block, insert (in memory) the block height into the
-;; state trie, returning a default success response.
-
-(defmethod respond :abci/RequestBeginBlock [{header :header}]
-  (let [height-v (pr-str (:height header))]
-    (swap! trie trie/insert height-k height-v))
-  ::mw/default)
-
 ;; Use [[util/valid-tx?]] to determine the `:code` value for the outgoing
 ;; `ResponseCheckTx` map.
 
@@ -143,11 +135,16 @@
                     :abci.code/ok
                     :abci.code/error)})
 
-;; `RequestDeliverTx` receives the user-submitted transaction as bytes in its
-;; `:tx` key. In our application, this is assumed to be a representation of
-;; an EDN map, containing key-value pairs we'll insert into [[trie]].  Note that
-;; we don't yet call [[trie/commit]] to flush the changes to disk - this is an
-;; in-memory operation, until the block is committed.
+;; We return the sequence of transactions unmolested, otherwise we
+;; would be evicting all of them.
+
+(defmethod respond :abci/RequestPrepareProposal [{txs :txs}]
+  {:stickler/msg :abci/ResponsePrepareProposal
+   :txs           txs})
+
+(defmethod respond :abci/RequestProcessProposal [_]
+  {:stickler/msg :abci/ResponseProcessProposal
+   :status       :ACCEPT})
 
 (defn- tx-map->inserts
   "Apply [[util/key->str]] to all keys in `m`, and `pr-str` to all values."
@@ -156,19 +153,26 @@
     (for [[k v] m]
       [(util/key->str k) (pr-str v)])))
 
-(defmethod respond :abci/RequestDeliverTx [{tx :tx}]
-  (let [inserts (tx-map->inserts (util/bytes->edn tx))]
-    (swap! trie #(reduce-kv trie/insert % inserts)))
-  ::mw/default)
 
 ;; Commit a block, flushing trie writes (block height increase & any
-;; inserts) to disk.
+;; inserts) to disk.  Ideally we wouldn't commit until RequestCommit,
+;; but we have no way of coming up with a valid app hash without
+;; committing the trie changes.  Similarly, we could speculatively
+;; insert the height in RequestPrepareProposal, and commit it in
+;; RequestCommit, however while not documented AFAICT, the first block
+;; is finalized without a proposal, so if it's empty, we'd be trying
+;; to commit an empty trie.  With a different data structure these
+;; things might not be problems.
 
-(defmethod respond :abci/RequestCommit [_]
-  (let [{hash :hash :as trie} (swap! trie trie/commit)]
+(defmethod respond :abci/RequestFinalizeBlock [{txs :txs height :height}]
+  (let [inserts      (apply merge (map tx-map->inserts (map util/bytes->edn txs)))
+        {hash :hash} (swap! trie #(as-> % t
+                                    (trie/insert t height-k (pr-str height))
+                                    (reduce-kv trie/insert t inserts)
+                                    (trie/commit t)))]
     (kv/insert store last-hash-k hash)
-    {:stickler/msg :abci/ResponseCommit
-     :data          hash}))
+    {:stickler/msg :abci/ResponseFinalizeBlock
+     :app-hash      hash}))
 
 ;; `RequestQuery`'s `:data` key ought to hold a byte array representation of
 ;; a keyword, which we'll lookup in a clean trie constructed around the hash

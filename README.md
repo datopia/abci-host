@@ -25,9 +25,10 @@ received from the Tendermint node process --- maps in, maps out.
 ## Project -> Tendermint Version Mapping
 
 
-| org.datopia/abci  | Tendermint    |
-| ----------------- | ------------- |
-| 0.1.0             | 0.34.12       |
+| org.datopia/abci  | Tendermint        |
+| ----------------- | ----------------- |
+| 0.2.0             | 0.38.5 (CometBFT) |
+| 0.1.0             | 0.34.12           |
 
 There's a previous, deprecated artifact:
 
